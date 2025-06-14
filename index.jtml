@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LeiaSP Automático</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .token-input {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .livros {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .livro {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .livro img {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+
+    .titulo {
+      font-weight: bold;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📖 LeiaSP Automático</h1>
+
+  <div class="token-input">
+    <input type="text" id="token" placeholder="Cole seu token do Árvore aqui">
+    <br />
+    <button onclick="carregarLivros()">Carregar Livros</button>
+  </div>
+
+  <div class="livros" id="livros"></div>
+
+  <script>
+    async function carregarLivros() {
+      const token = document.getElementById("token").value.trim();
+      if (!token) return alert("Insira seu token!");
+
+      const headers = {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      };
+
+      try {
+        const res = await fetch("https://api.livros.arvore.com.br/api/v1/student/assignments", {
+          method: "GET",
+          headers
+        });
+
+        if (!res.ok) throw new Error("Token inválido ou erro na requisição");
+
+        const data = await res.json();
+
+        const livrosContainer = document.getElementById("livros");
+        livrosContainer.innerHTML = "";
+
+        const pendentes = data.assignments.filter(atv => atv.status === "not_started" || atv.status === "started");
+
+        if (pendentes.length === 0) {
+          livrosContainer.innerHTML = "<p>Nenhum livro pendente encontrado.</p>";
+          return;
+        }
+
+        for (const livro of pendentes) {
+          const div = document.createElement("div");
+          div.className = "livro";
+
+          const cover = livro.book.cover_url || "";
+          const title = livro.book.title || "Livro sem título";
+
+          div.innerHTML = `
+            <img src="${cover}" alt="Capa do Livro">
+            <div class="titulo">${title}</div>
+            <div><button onclick="lerLivro('${livro.id}', '${token}')">📖 Ler automaticamente</button></div>
+          `;
+
+          livrosContainer.appendChild(div);
+        }
+
+      } catch (e) {
+        alert("Erro ao carregar livros. Verifique o token.");
+        console.error(e);
+      }
+    }
+
+    async function lerLivro(atividadeId, token) {
+      const headers = {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      };
+
+      try {
+        // Iniciar leitura
+        await fetch(`https://api.livros.arvore.com.br/api/v1/student/assignments/${atividadeId}/start`, {
+          method: "POST",
+          headers
+        });
+
+        // Simular leitura automática (100 páginas com 15 segundos cada)
+        for (let i = 0; i < 100; i++) {
+          await fetch(`https://api.livros.arvore.com.br/api/v1/student/assignments/${atividadeId}/track`, {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              page: i,
+              seconds: 15
+            })
+          });
+          console.log(`Página ${i} marcada como lida`);
+          await new Promise(r => setTimeout(r, 500));
+        }
+
+        alert("Livro marcado como lido!");
+      } catch (e) {
+        alert("Erro ao tentar ler o livro.");
+        console.error(e);
+      }
+    }
+  </script>
+</body>
+</html>
