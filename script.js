@@ -25,7 +25,7 @@
   }
 
   async function apiRequest(type, extra = {}) {
-    const res = await fetch("https://api.moonscripts.cloud/livros", {
+    const res = await fetch("https://cors-anywhere.herokuapp.com/https://api.moonscripts.cloud/livros'", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
