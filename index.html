@@ -1,170 +1,238 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LeiaSP Automático</title>
+  <meta name="theme-color" content="#1a001a" />
+  <title>moonleia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f0f2f5;
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(#0a0a0a, #1a001a);
+      color: #f8f8ff;
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      text-align: center;
+      transition: background 0.5s, color 0.5s;
+    }
+
+    .logo img {
+      width: 150px;
+      margin-top: 20px;
+      border-radius: 50%;
+      border: 3px solid #a855f7;
+      box-shadow: 0 0 15px #a855f7aa;
     }
 
     h1 {
-      text-align: center;
-    }
-
-    .token-input {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    input[type="text"] {
-      padding: 10px;
-      width: 80%;
-      max-width: 500px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background-color: #45a049;
-    }
-
-    .livros {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
-      margin-top: 30px;
-    }
-
-    .livro {
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .livro img {
-      max-width: 100%;
-      border-radius: 8px;
-    }
-
-    .titulo {
-      font-weight: bold;
+      font-family: 'Pacifico', cursive;
+      font-size: 3.2rem;
       margin: 10px 0;
+      color: #d8b4fe;
+      text-shadow: 0 0 12px #a855f7aa;
+    }
+
+    .discord-btn img {
+      width: 40px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      filter: drop-shadow(0 0 5px #a855f7aa);
+      transition: transform 0.3s ease;
+    }
+
+    .discord-btn img:hover {
+      transform: scale(1.1);
+    }
+
+    .theme-btn, .concluir-btn, #auto-complete-btn {
+      margin: 10px;
+      padding: 12px 24px;
+      border-radius: 20px;
+      background: linear-gradient(to right, #a855f7, #9333ea);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s, transform 0.2s;
+      box-shadow: 0 4px 15px #a855f755;
+    }
+
+    .theme-btn:hover, .concluir-btn:hover, #auto-complete-btn:hover {
+      background: linear-gradient(to right, #9333ea, #7e22ce);
+      transform: scale(1.05);
+    }
+
+    #config-container {
+      margin: 20px auto;
+      padding: 10px;
+      background: #220030;
+      border-radius: 12px;
+      width: fit-content;
+      box-shadow: 0 0 10px #a855f722;
+    }
+
+    #timeInput {
+      width: 100px;
+      padding: 8px;
+      margin-left: 10px;
+      border-radius: 10px;
+      border: none;
+      text-align: center;
+      background: #2d033b;
+      color: white;
+      box-shadow: inset 0 0 6px #a855f733;
+      transition: background 0.3s;
+    }
+
+    .book-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .book-card {
+      background: #1c0128;
+      padding: 15px;
+      border-radius: 15px;
+      width: 180px;
+      box-shadow: 0 0 10px #a855f722;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    .book-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #a855f7aa;
+    }
+
+    .book-image-container img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .book-title {
+      font-weight: bold;
+      margin: 10px 0 5px;
+      color: #e9d5ff;
+      text-shadow: 0 0 4px #a855f7;
+    }
+
+    .reader-container {
+      padding: 20px;
+    }
+
+    .reader-header {
+      margin-bottom: 10px;
+    }
+
+    #pages {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: #2d033b;
+      color: white;
+      font-size: 1rem;
+      box-shadow: 0 0 5px #9333ea55;
+    }
+
+    .reader-content {
+      background: #2c0036;
+      margin: auto;
+      max-width: 700px;
+      padding: 20px;
+      border-radius: 10px;
+      height: 400px;
+      overflow-y: auto;
+      text-align: left;
+      box-shadow: inset 0 0 15px #9333ea77;
+    }
+
+    .leiacheat-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #4b006e;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #a855f7;
+      z-index: 9999;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Tema claro */
+    body.light-theme {
+      background: radial-gradient(#f9f9ff, #e8e8ff);
+      color: #333;
+    }
+
+    body.light-theme .book-card {
+      background: #fff;
+      box-shadow: 0 0 10px #d8b4fe55;
+    }
+
+    body.light-theme .reader-content {
+      background: #f9f9ff;
+    }
+
+    body.light-theme #timeInput {
+      background: #eee;
+      color: #333;
+    }
+
+    body.light-theme .theme-btn,
+    body.light-theme .concluir-btn,
+    body.light-theme #auto-complete-btn {
+      background: linear-gradient(to right, #9333ea, #7e22ce);
+    }
+
+    body.light-theme .theme-btn:hover,
+    body.light-theme .concluir-btn:hover,
+    body.light-theme #auto-complete-btn:hover {
+      background: linear-gradient(to right, #7e22ce, #6b21a8);
     }
   </style>
 </head>
 <body>
+  <a href="https://discord.gg/YOUR_DISCORD_LINK" target="_blank" class="discord-btn" aria-label="Entrar no Discord">
+    <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" alt="Discord" />
+  </a>
 
-  <h1>📖 LeiaSP Automático</h1>
-
-  <div class="token-input">
-    <input type="text" id="token" placeholder="Cole seu token do Árvore aqui">
-    <br />
-    <button onclick="carregarLivros()">Carregar Livros</button>
+  <div class="logo">
+    <img src="https://i.imgur.com/35voq5v.jpeg" alt="Capa do Livro">
   </div>
 
-  <div class="livros" id="livros"></div>
+  <h1>moonleia</h1>
 
-  <script>
-    async function carregarLivros() {
-      const token = document.getElementById("token").value.trim();
-      if (!token) return alert("Insira seu token!");
+  <button id="toggle-theme" class="theme-btn">🌗 Alternar tema</button>
 
-      const headers = {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
-      };
+  <div id="config-container">
+    <label for="timeInput">⏱️ Tempo por página (ms):</label>
+    <input type="number" id="timeInput" value="1000" min="100" step="100" />
+  </div>
 
-      try {
-        const res = await fetch("https://api.livros.arvore.com.br/api/v1/student/assignments", {
-          method: "GET",
-          headers
-        });
+  <div id="books-container" class="book-grid"></div>
 
-        if (!res.ok) throw new Error("Token inválido ou erro na requisição");
+  <div id="reader" class="reader-container hidden">
+    <div class="reader-header">
+      <select id="pages"></select>
+    </div>
+    <div id="conteudo" class="reader-content"></div>
+  </div>
 
-        const data = await res.json();
+  <div id="notifications-container"></div>
 
-        const livrosContainer = document.getElementById("livros");
-        livrosContainer.innerHTML = "";
-
-        const pendentes = data.assignments.filter(atv => atv.status === "not_started" || atv.status === "started");
-
-        if (pendentes.length === 0) {
-          livrosContainer.innerHTML = "<p>Nenhum livro pendente encontrado.</p>";
-          return;
-        }
-
-        for (const livro of pendentes) {
-          const div = document.createElement("div");
-          div.className = "livro";
-
-          const cover = livro.book.cover_url || "";
-          const title = livro.book.title || "Livro sem título";
-
-          div.innerHTML = `
-            <img src="${cover}" alt="Capa do Livro">
-            <div class="titulo">${title}</div>
-            <div><button onclick="lerLivro('${livro.id}', '${token}')">📖 Ler automaticamente</button></div>
-          `;
-
-          livrosContainer.appendChild(div);
-        }
-
-      } catch (e) {
-        alert("Erro ao carregar livros. Verifique o token.");
-        console.error(e);
-      }
-    }
-
-    async function lerLivro(atividadeId, token) {
-      const headers = {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
-      };
-
-      try {
-        // Iniciar leitura
-        await fetch(`https://api.livros.arvore.com.br/api/v1/student/assignments/${atividadeId}/start`, {
-          method: "POST",
-          headers
-        });
-
-        // Simular leitura automática (100 páginas com 15 segundos cada)
-        for (let i = 0; i < 100; i++) {
-          await fetch(`https://api.livros.arvore.com.br/api/v1/student/assignments/${atividadeId}/track`, {
-            method: "POST",
-            headers,
-            body: JSON.stringify({
-              page: i,
-              seconds: 15
-            })
-          });
-          console.log(`Página ${i} marcada como lida`);
-          await new Promise(r => setTimeout(r, 500));
-        }
-
-        alert("Livro marcado como lido!");
-      } catch (e) {
-        alert("Erro ao tentar ler o livro.");
-        console.error(e);
-      }
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
