@@ -1,4 +1,3 @@
-// Adaptado para usar a API https://api.moonscripts.cloud/livros
 (function () {
   'use strict';
 
