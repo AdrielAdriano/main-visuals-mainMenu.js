@@ -2,12 +2,7 @@ async function makeRequest(url, method = 'GET', headers = {}, body = null) {
   const options = {
     method,
     headers: {
-      'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
       'Content-Type': 'application/json',
-      'Connection': 'keep-alive',
-      'Sec-Fetch-Site': 'same-origin',
-      'Sec-Fetch-Mode': 'cors',
-      'Sec-Fetch-Dest': 'empty',
       ...headers
     }
   };
@@ -25,7 +20,7 @@ function getTokenLeia(ra, senha) {
   });
 }
 
-window.startMoonLeia = async function startMoonLeia() {
+window.startMoonLeia = async function () {
   'use strict';
 
   let isRunning = false;
@@ -33,16 +28,15 @@ window.startMoonLeia = async function startMoonLeia() {
   let currentPageIndex = 0;
   let pages = [];
   let currentBookSlug = null;
-  let isAutoMode = false;
   let booksCache = [];
   let token = null;
 
-  const booksContainer = document.getElementById("books-container") || document.createElement("div");
-  const readerDiv = document.getElementById("reader") || document.createElement("div");
-  const pagesSelect = document.getElementById("pages") || document.createElement("select");
-  const contentDiv = document.getElementById("conteudo") || document.createElement("div");
-  const timeInput = document.getElementById("timeInput") || document.createElement("input");
-  const autoButton = document.getElementById("autoButton") || document.createElement("button");
+  const booksContainer = document.getElementById("books-container");
+  const readerDiv = document.getElementById("reader");
+  const pagesSelect = document.getElementById("pages");
+  const contentDiv = document.getElementById("conteudo");
+  const timeInput = document.getElementById("timeInput");
+  const autoButton = document.getElementById("autoButton");
 
   const user = window.userLogin || {};
   const ra = user.ra;
@@ -74,18 +68,19 @@ window.startMoonLeia = async function startMoonLeia() {
 
   function showNotification(msg) {
     const n = document.createElement("div");
-    n.className = "leiacheat-notification";
     n.textContent = msg;
-    n.style.position = "fixed";
-    n.style.bottom = "20px";
-    n.style.left = "50%";
-    n.style.transform = "translateX(-50%)";
-    n.style.background = "#9333ea";
-    n.style.color = "#fff";
-    n.style.padding = "10px 20px";
-    n.style.borderRadius = "10px";
-    n.style.boxShadow = "0 0 10px #a855f7aa";
-    n.style.zIndex = "9999";
+    Object.assign(n.style, {
+      position: "fixed",
+      bottom: "20px",
+      left: "50%",
+      transform: "translateX(-50%)",
+      background: "#9333ea",
+      color: "#fff",
+      padding: "10px 20px",
+      borderRadius: "10px",
+      boxShadow: "0 0 10px #a855f7aa",
+      zIndex: 9999
+    });
     document.body.appendChild(n);
     setTimeout(() => n.remove(), 5000);
   }
@@ -135,19 +130,17 @@ window.startMoonLeia = async function startMoonLeia() {
       showNotification("✅ Livros carregados.");
     } catch (err) {
       showNotification("❌ Erro ao carregar livros.");
-      console.error("Erro ao carregar livros:", err);
+      console.error(err);
     }
   }
 
   async function loadRealPages(slug) {
     booksContainer.classList.add("hidden");
     readerDiv.classList.remove("hidden");
-
     try {
       const chaptersRes = await apiRequest("capitulosLivro", { book_id: slug });
       const chapters = chaptersRes?.result?.data || [];
       pages = [];
-
       const pagePromises = chapters.map(async (chapter) => {
         const pagesRes = await apiRequest("paginasCapitulo", { chapterId: chapter.id });
         const pagesData = pagesRes?.result?.data || [];
@@ -157,11 +150,9 @@ window.startMoonLeia = async function startMoonLeia() {
           content: page.htmlContent || page.text || "<p>[Sem conteúdo]</p>"
         }));
       });
-
       pages = (await Promise.all(pagePromises)).flat();
-
       if (!pages.length) {
-        showNotification(`❌ Nenhuma página encontrada para o livro (slug: ${slug}).`);
+        showNotification("❌ Nenhuma página encontrada.");
         readerDiv.classList.add("hidden");
         booksContainer.classList.remove("hidden");
         return;
@@ -180,10 +171,10 @@ window.startMoonLeia = async function startMoonLeia() {
       autoButton.onclick = () => isRunning ? pauseAuto() : startAuto();
 
       openPage(0);
-      if (!isAutoMode) startAuto();
+      startAuto();
     } catch (err) {
       showNotification("❌ Erro ao carregar páginas do livro.");
-      console.error("Erro:", err);
+      console.error(err);
       readerDiv.classList.add("hidden");
       booksContainer.classList.remove("hidden");
     }
@@ -207,7 +198,6 @@ window.startMoonLeia = async function startMoonLeia() {
     if (isRunning) return;
     isRunning = true;
     autoButton.textContent = "⏸️ Pausar Autocompletar";
-
     const scroll = async () => {
       if (!isRunning) return;
       if (contentDiv.scrollTop + contentDiv.clientHeight >= contentDiv.scrollHeight - 10) {
@@ -231,37 +221,9 @@ window.startMoonLeia = async function startMoonLeia() {
         requestAnimationFrame(scroll);
       }
     };
-
     scroll();
   }
 };
-
-function criarModalDetalhes() {
-  const modal = document.createElement("div");
-  modal.id = "modalDetalhesLivro";
-  modal.style.position = "fixed";
-  modal.style.top = "0";
-  modal.style.left = "0";
-  modal.style.width = "100vw";
-  modal.style.height = "100vh";
-  modal.style.background = "rgba(0, 0, 0, 0.7)";
-  modal.style.display = "flex";
-  modal.style.alignItems = "center";
-  modal.style.justifyContent = "center";
-  modal.style.zIndex = "9999";
-  modal.style.padding = "20px";
-  modal.style.boxSizing = "border-box";
-  modal.innerHTML = `
-    <div style="background: #fff; color: #111; padding: 20px; border-radius: 10px; max-width: 500px; width: 100%; position: relative;">
-      <button id="fecharModalDetalhes" style="position: absolute; top: 10px; right: 15px; background: #9333ea; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Fechar</button>
-      <div id="conteudoDetalhesLivro">
-        <p>Carregando detalhes...</p>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(modal);
-  document.getElementById("fecharModalDetalhes").onclick = () => modal.remove();
-}
 
 async function mostrarDetalhesLivro(slug) {
   try {
@@ -272,9 +234,7 @@ async function mostrarDetalhesLivro(slug) {
       document.getElementById("conteudoDetalhesLivro").innerHTML = "<p>❌ Não foi possível carregar os detalhes do livro.</p>";
       return;
     }
-
     const { name, author, description, year, estimatedReadingTimeInMinutes, readPercentage, isFinished, chapterCount } = info;
-
     document.getElementById("conteudoDetalhesLivro").innerHTML = `
       <h2 style="margin-top: 0;">📘 ${name}</h2>
       <p><strong>✍️ Autor:</strong> ${author || 'Desconhecido'}</p>
@@ -288,7 +248,35 @@ async function mostrarDetalhesLivro(slug) {
     `;
   } catch (err) {
     console.error("Erro ao buscar detalhes do livro:", err);
-    const showNotification = window.showNotification || (msg => alert(msg));
-    showNotification("❌ Erro ao buscar detalhes do livro.");
+    alert("❌ Erro ao buscar detalhes do livro.");
   }
+}
+
+function criarModalDetalhes() {
+  const modal = document.createElement("div");
+  modal.id = "modalDetalhesLivro";
+  modal.style = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+    box-sizing: border-box;
+  `;
+  modal.innerHTML = `
+    <div style="background: #fff; color: #111; padding: 20px; border-radius: 10px; max-width: 500px; width: 100%; position: relative;">
+      <button id="fecharModalDetalhes" style="position: absolute; top: 10px; right: 15px; background: #9333ea; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Fechar</button>
+      <div id="conteudoDetalhesLivro">
+        <p>Carregando detalhes...</p>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  document.getElementById("fecharModalDetalhes").onclick = () => modal.remove();
 }
