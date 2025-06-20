@@ -1,5 +1,4 @@
-// Adaptado para usar a API https://api.moonscripts.cloud/livros
-(function () {
+window.startMoonLeia = async function startMoonLeia() {
   'use strict';
 
   let isRunning = false;
@@ -9,6 +8,7 @@
   let currentBookSlug = null;
   let isAutoMode = false;
   let booksCache = [];
+  let token = null;
 
   const booksContainer = document.getElementById("books-container") || document.createElement("div");
   const readerDiv = document.getElementById("reader") || document.createElement("div");
@@ -17,19 +17,42 @@
   const timeInput = document.getElementById("timeInput") || document.createElement("input");
   const autoButton = document.getElementById("autoButton") || document.createElement("button");
 
-  const token = new URLSearchParams(window.location.search).get("token");
-  if (!token || token.trim() === "") {
-    booksContainer.innerHTML = "<p>⚠️ Token não encontrado ou inválido na URL. Acesse com <code>?token=SEU_TOKEN</code></p>";
-    showNotification("❌ Token inválido. Verifique a URL.");
-    return;
+  const user = window.userLogin || {};
+  const ra = user.ra;
+  const senha = user.senha;
+
+  if (!ra || !senha) {
+    showNotification("❌ RA ou senha ausentes.");
+    return false;
+  }
+
+  try {
+    const res = await fetch("https://api.moonscripts.cloud/livros", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "getToken", ra, senha })
+    });
+
+    const data = await res.json();
+    token = data?.result?.token;
+
+    if (!token) {
+      showNotification("❌ RA ou senha incorretos.");
+      return false;
+    }
+
+    await loadBooks();
+    return true;
+  } catch (err) {
+    showNotification("❌ Erro ao autenticar.");
+    console.error(err);
+    return false;
   }
 
   async function apiRequest(type, extra = {}) {
     const res = await fetch("https://api.moonscripts.cloud/livros", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type, token, ...extra })
     });
     return await res.json();
@@ -39,6 +62,16 @@
     const n = document.createElement("div");
     n.className = "leiacheat-notification";
     n.textContent = msg;
+    n.style.position = "fixed";
+    n.style.bottom = "20px";
+    n.style.left = "50%";
+    n.style.transform = "translateX(-50%)";
+    n.style.background = "#9333ea";
+    n.style.color = "#fff";
+    n.style.padding = "10px 20px";
+    n.style.borderRadius = "10px";
+    n.style.boxShadow = "0 0 10px #a855f7aa";
+    n.style.zIndex = "9999";
     document.body.appendChild(n);
     setTimeout(() => n.remove(), 5000);
   }
@@ -162,29 +195,34 @@
       if (contentDiv.scrollTop + contentDiv.clientHeight >= contentDiv.scrollHeight - 10) {
         if (currentPageIndex + 1 < pages.length) {
           openPage(++currentPageIndex);
+
           await apiRequest("registrarPagina", {
             book_slug: currentBookSlug,
             chapter_id: pages[currentPageIndex].chapterId,
-            page_number: currentPageIndex
+            page_number: currentPageIndex + 1
           });
 
-          if (currentPageIndex % 10 === 0)
+          if (currentPageIndex % 10 === 0) {
             await apiRequest("marcarCapituloLido", {
               book_id: currentBookSlug,
               chapter_id: pages[currentPageIndex].chapterId
             });
+          }
 
-          if (currentPageIndex % 5 === 0)
+          if (currentPageIndex % 5 === 0) {
             await apiRequest("highlight", {
               chapter_id: pages[currentPageIndex].chapterId,
-              content: "Trecho automático gerado"
+              content: "Trecho destacado automaticamente",
+              color: "#FFFF00"
             });
+          }
 
-          if (currentPageIndex % 15 === 0)
+          if (currentPageIndex % 15 === 0) {
             await apiRequest("bookmark", {
               chapter_id: pages[currentPageIndex].chapterId,
-              page_number: currentPageIndex
+              page_number: currentPageIndex + 1
             });
+          }
 
           setTimeout(scroll, intervalTime);
         } else {
@@ -199,6 +237,4 @@
 
     scroll();
   }
-
-  loadBooks();
-})();
+};
