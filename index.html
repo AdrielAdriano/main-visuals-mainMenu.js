@@ -7,104 +7,161 @@
   <title>moonleia</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: radial-gradient(circle at top left, #1a001a, #0a0a0a);
+      --text: #f8f8ff;
+      --primary: #a855f7;
+      --primary-dark: #9333ea;
+      --input-bg: #2d033b;
+      --input-focus: #3a004f;
+    }
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --text: #111;
+      --primary: #9333ea;
+      --primary-dark: #7e22ce;
+      --input-bg: #e2e8f0;
+      --input-focus: #cbd5e1;
+    }
+
     body {
+      background: var(--bg);
+      color: var(--text);
       font-family: 'Inter', sans-serif;
-      background: radial-gradient(#0a0a0a, #1a001a);
-      color: #f8f8ff;
       margin: 0;
       padding: 0;
       text-align: center;
+      transition: background 0.5s, color 0.5s;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     .logo img {
-      width: 150px;
-      margin-top: 20px;
+      width: 140px;
+      margin-top: 25px;
       border-radius: 50%;
-      border: 3px solid #a855f7;
-      box-shadow: 0 0 15px #a855f7aa;
+      border: 3px solid var(--primary);
+      box-shadow: 0 0 20px var(--primary-dark);
+      transition: transform 0.4s ease;
+    }
+
+    .logo img:hover {
+      transform: scale(1.05);
     }
 
     h1 {
       font-family: 'Pacifico', cursive;
-      font-size: 3rem;
-      margin: 10px 0;
-      color: #d8b4fe;
-      text-shadow: 0 0 12px #a855f7aa;
+      font-size: 3.2rem;
+      color: var(--primary);
+      text-shadow: 0 0 15px var(--primary-dark);
+      margin-bottom: 10px;
+    }
+
+    #login-container {
+      background: rgba(60, 0, 89, 0.95);
+      max-width: 420px;
+      margin: 2rem auto;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 0 25px var(--primary-dark);
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .login-title {
+      font-family: 'Pacifico', cursive;
+      font-size: 1.8rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .login-desc {
+      font-size: 1rem;
+      color: var(--text);
+      opacity: 0.9;
+      margin-bottom: 1.5rem;
+    }
+
+    .input-wrapper {
+      position: relative;
+      margin-bottom: 1.2rem;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      padding: 12px 12px 12px 40px;
+      background: var(--input-bg);
+      border: 2px solid transparent;
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    .input-wrapper input:focus {
+      outline: none;
+      background: var(--input-focus);
+      border-color: var(--primary);
+      box-shadow: 0 0 8px var(--primary);
+    }
+
+    .input-icon, .toggle-olho {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      color: #bbb;
+    }
+
+    .input-icon {
+      left: 12px;
+    }
+
+    .toggle-olho {
+      right: 12px;
+      cursor: pointer;
+    }
+
+    .login-divider {
+      margin: 1.5rem 0;
+      border: none;
+      border-top: 1px solid var(--primary);
+    }
+
+    .login-note {
+      font-size: 0.85rem;
+      color: #d4d4d8;
     }
 
     .theme-btn {
-      margin: 10px;
+      background: linear-gradient(to right, var(--primary), var(--primary-dark));
+      color: white;
       padding: 12px 24px;
-      border-radius: 20px;
-      background: linear-gradient(to right, #a855f7, #9333ea);
-      color: #fff;
       border: none;
-      cursor: pointer;
+      border-radius: 999px;
       font-size: 1rem;
       box-shadow: 0 4px 15px #a855f755;
-      transition: all 0.3s ease;
+      cursor: pointer;
+      transition: 0.3s;
     }
 
     .theme-btn:hover {
       opacity: 0.9;
+      box-shadow: 0 0 10px var(--primary);
     }
 
-    .book-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      padding: 20px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    #login-container {
-      padding: 40px;
-      max-width: 400px;
-      margin: 30px auto;
-      background: #3c0059;
-      border-radius: 15px;
-      box-shadow: 0 0 20px #a855f755;
-    }
-
-    #login-container input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: none;
-      border-radius: 10px;
-      background: #2d033b;
-      color: #fff;
-      font-size: 1rem;
-    }
-
-    #login-container input::placeholder {
-      color: #ccc;
-    }
-
-    .reader-header select,
-    #timeInput {
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      background: #2d033b;
-      color: white;
-      font-size: 1rem;
-      margin: 5px;
-    }
-
-    .reader-content {
-      background: #2c0036;
-      margin: auto;
-      max-width: 700px;
-      padding: 20px;
-      border-radius: 10px;
-      height: 400px;
-      overflow-y: auto;
-      text-align: left;
+    .theme-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .discord-btn img {
@@ -112,21 +169,44 @@
       position: absolute;
       top: 10px;
       right: 10px;
-      filter: drop-shadow(0 0 5px #a855f7aa);
+      filter: drop-shadow(0 0 5px var(--primary-dark));
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .hidden { display: none; }
 
     .leiacheat-notification {
       position: fixed;
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: #9333ea;
+      background: #000000cc;
+      padding: 12px 18px;
+      border-radius: 12px;
       color: #fff;
-      padding: 10px 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #a855f7aa;
-      z-index: 9999;
+      box-shadow: 0 0 10px var(--primary-dark);
       font-size: 1rem;
+      z-index: 9999;
     }
   </style>
 </head>
@@ -136,91 +216,115 @@
   </a>
 
   <div class="logo">
-    <img src="https://cdn.discordapp.com/attachments/1383659588985032734/1384608368471183390/925aee9d-ba63-4977-97af-ec95dd20f7a1.png?ex=68545e07&is=68530c87&hm=8e03c0cfa447373cdb7086199c92fec22e9b68e2099e1cddfde6e825f398661e&" alt="Moonleia">
+    <img src="https://cdn.discordapp.com/attachments/1383659588985032734/1384608368471183390/925aee9d-ba63-4977-97af-ec95dd20f7a1.png?ex=6855af87&is=68545e07&hm=98cf89604deffbb7375b566b85e6a6733e2cd9ca3ed07ba77e1454e36074c9e3&" alt="Moonleia">
   </div>
 
   <h1>moonleia</h1>
 
-  <!-- Login -->
   <div id="login-container">
-    <input type="text" id="raInput" placeholder="Ex: 000123456789xsp">
-    <div style="position: relative;">
-      <input type="password" id="senhaInput" placeholder="Digite sua senha">
-      <span onclick="toggleSenha()" style="
-        position: absolute;
-        top: 35%;
-        right: 20px;
-        transform: translateY(-50%);
-        cursor: pointer;
-        color: #ccc;
-        font-size: 1.1rem;">👁️</span>
+    <h2 class="login-title">Bem-vindo ao MoonLeia</h2>
+    <p class="login-desc">Faça login com seu RA e senha da plataforma para começar a leitura mágica. 🌙</p>
+
+    <div class="input-wrapper">
+      <label for="raInput" class="sr-only">RA</label>
+      <input type="text" id="raInput" placeholder="RA Ex: 000123456789xsp" aria-label="RA" oninput="validateFields()" />
+      <span class="input-icon">🎓</span>
     </div>
-    <button class="theme-btn" onclick="iniciarLeitura()">📖 Ler</button>
-  </div>
 
-  <!-- Configurações -->
-  <button id="toggle-theme" class="theme-btn hidden">🌗 Alternar tema</button>
-
-  <div id="config-container" class="hidden">
-    <label for="timeInput">⏱️ Tempo por página (ms):</label>
-    <input type="number" id="timeInput" value="1000" min="100" step="100" />
-    <button id="autoButton" class="theme-btn">🚀 Autocompletar Tudo</button>
-  </div>
-
-  <!-- Livros -->
-  <div id="books-container" class="book-grid hidden"></div>
-
-  <!-- Leitor -->
-  <div id="reader" class="reader-container hidden">
-    <div class="reader-header">
-      <select id="pages"></select>
+    <div class="input-wrapper">
+      <label for="senhaInput" class="sr-only">Senha</label>
+      <input type="password" id="senhaInput" placeholder="Digite sua senha" aria-label="Senha" oninput="validateFields()" />
+      <span onclick="toggleSenha()" class="toggle-olho" aria-label="Mostrar senha">👁️</span>
+      <span class="input-icon">🔑</span>
     </div>
-    <div id="conteudo" class="reader-content"></div>
-  </div>
 
-  <!-- Notificações -->
-  <div id="notifications-container"></div>
+    <hr class="login-divider" />
+
+    <button class="theme-btn" id="btnLer" onclick="iniciarLeitura()" disabled>
+      <span id="spinner" class="spinner hidden"></span>
+      <span id="btnText">📖 Iniciar Leitura</span>
+    </button>
+
+    <p class="login-note">By MonkeyDJunin. É necessário o RA completo (com <code>xsp</code>).</p>
+    <button class="theme-btn" onclick="alternarTema()">🌗 Alternar tema</button>
+  </div>
 
   <script>
     function showNotification(msg) {
       const n = document.createElement("div");
       n.className = "leiacheat-notification";
-      n.textContent = msg;
+      n.innerHTML = `<span style="font-size: 1.2rem; margin-right: 6px;">⚠️</span> ${msg}`;
       document.body.appendChild(n);
       setTimeout(() => n.remove(), 5000);
     }
 
+    function validateFields() {
+      const ra = document.getElementById('raInput').value.trim();
+      const senha = document.getElementById('senhaInput').value.trim();
+      const btn = document.getElementById('btnLer');
+      btn.disabled = !(ra.length > 5 && senha.length > 3);
+    }
+
     async function iniciarLeitura() {
+      const btn = document.getElementById('btnLer');
+      const spinner = document.getElementById('spinner');
+      const btnText = document.getElementById('btnText');
+
+      btn.disabled = true;
+      btnText.textContent = "Validando...";
+      spinner.classList.remove('hidden');
+
       const ra = document.getElementById('raInput').value.trim();
       const senha = document.getElementById('senhaInput').value.trim();
 
       if (!ra || !senha) {
         showNotification("❌ Preencha RA e senha corretamente.");
+        btnText.textContent = "📖 Iniciar Leitura";
+        spinner.classList.add('hidden');
+        validateFields();
         return;
       }
 
+      localStorage.setItem("moonleiaRA", ra);
       window.userLogin = { ra, senha };
 
       if (typeof startMoonLeia === 'function') {
         const success = await startMoonLeia();
-
         if (success) {
           document.getElementById('login-container').classList.add('hidden');
-          document.getElementById('books-container').classList.remove('hidden');
-          document.getElementById('config-container').classList.remove('hidden');
-          document.getElementById('toggle-theme').classList.remove('hidden');
         } else {
           showNotification("❌ RA ou senha inválidos.");
         }
       } else {
         showNotification("⚠️ Função startMoonLeia não carregada.");
       }
+
+      spinner.classList.add('hidden');
+      btnText.textContent = "📖 Iniciar Leitura";
+      validateFields();
     }
 
     function toggleSenha() {
       const input = document.getElementById('senhaInput');
       input.type = input.type === 'password' ? 'text' : 'password';
     }
+
+    function alternarTema() {
+      const html = document.documentElement;
+      const novoTema = html.dataset.theme === "light" ? "dark" : "light";
+      html.dataset.theme = novoTema;
+      localStorage.setItem("moonleiaTheme", novoTema);
+    }
+
+    window.onload = () => {
+      const savedRa = localStorage.getItem("moonleiaRA");
+      if (savedRa) document.getElementById('raInput').value = savedRa;
+
+      const savedTheme = localStorage.getItem("moonleiaTheme");
+      if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+
+      validateFields();
+    };
   </script>
 
   <script src="script.js"></script>
