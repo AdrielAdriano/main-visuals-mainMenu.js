@@ -7,10 +7,6 @@
   <title>moonleia</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       font-family: 'Inter', sans-serif;
       background: radial-gradient(#0a0a0a, #1a001a);
@@ -18,7 +14,6 @@
       margin: 0;
       padding: 0;
       text-align: center;
-      transition: background 0.5s, color 0.5s;
     }
 
     .logo img {
@@ -31,26 +26,13 @@
 
     h1 {
       font-family: 'Pacifico', cursive;
-      font-size: 3.2rem;
+      font-size: 3rem;
       margin: 10px 0;
       color: #d8b4fe;
       text-shadow: 0 0 12px #a855f7aa;
     }
 
-    .discord-btn img {
-      width: 40px;
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      filter: drop-shadow(0 0 5px #a855f7aa);
-      transition: transform 0.3s ease;
-    }
-
-    .discord-btn img:hover {
-      transform: scale(1.1);
-    }
-
-    .theme-btn, .concluir-btn, #auto-complete-btn {
+    .theme-btn {
       margin: 10px;
       padding: 12px 24px;
       border-radius: 20px;
@@ -59,35 +41,12 @@
       border: none;
       cursor: pointer;
       font-size: 1rem;
-      transition: background 0.3s, transform 0.2s;
       box-shadow: 0 4px 15px #a855f755;
+      transition: all 0.3s ease;
     }
 
-    .theme-btn:hover, .concluir-btn:hover, #auto-complete-btn:hover {
-      background: linear-gradient(to right, #9333ea, #7e22ce);
-      transform: scale(1.05);
-    }
-
-    #config-container {
-      margin: 20px auto;
-      padding: 10px;
-      background: #220030;
-      border-radius: 12px;
-      width: fit-content;
-      box-shadow: 0 0 10px #a855f722;
-    }
-
-    #timeInput {
-      width: 100px;
-      padding: 8px;
-      margin-left: 10px;
-      border-radius: 10px;
-      border: none;
-      text-align: center;
-      background: #2d033b;
-      color: white;
-      box-shadow: inset 0 0 6px #a855f733;
-      transition: background 0.3s;
+    .theme-btn:hover {
+      opacity: 0.9;
     }
 
     .book-grid {
@@ -98,49 +57,43 @@
       padding: 20px;
     }
 
-    .book-card {
-      background: #1c0128;
-      padding: 15px;
+    .hidden {
+      display: none !important;
+    }
+
+    #login-container {
+      padding: 40px;
+      max-width: 400px;
+      margin: 30px auto;
+      background: #3c0059;
       border-radius: 15px;
-      width: 180px;
-      box-shadow: 0 0 10px #a855f722;
-      transition: transform 0.3s, box-shadow 0.3s;
-      cursor: pointer;
+      box-shadow: 0 0 20px #a855f755;
     }
 
-    .book-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px #a855f7aa;
-    }
-
-    .book-image-container img {
+    #login-container input {
       width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: none;
       border-radius: 10px;
+      background: #2d033b;
+      color: #fff;
+      font-size: 1rem;
     }
 
-    .book-title {
-      font-weight: bold;
-      margin: 10px 0 5px;
-      color: #e9d5ff;
-      text-shadow: 0 0 4px #a855f7;
+    #login-container input::placeholder {
+      color: #ccc;
     }
 
-    .reader-container {
-      padding: 20px;
-    }
-
-    .reader-header {
-      margin-bottom: 10px;
-    }
-
-    #pages {
+    .reader-header select,
+    #timeInput {
       padding: 10px;
       border-radius: 8px;
       border: none;
       background: #2d033b;
       color: white;
       font-size: 1rem;
-      box-shadow: 0 0 5px #9333ea55;
+      margin: 5px;
     }
 
     .reader-content {
@@ -152,63 +105,33 @@
       height: 400px;
       overflow-y: auto;
       text-align: left;
-      box-shadow: inset 0 0 15px #9333ea77;
+    }
+
+    .discord-btn img {
+      width: 40px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      filter: drop-shadow(0 0 5px #a855f7aa);
     }
 
     .leiacheat-notification {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #4b006e;
-      color: white;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #9333ea;
+      color: #fff;
       padding: 10px 20px;
       border-radius: 10px;
-      box-shadow: 0 0 10px #a855f7;
+      box-shadow: 0 0 10px #a855f7aa;
       z-index: 9999;
+      font-size: 1rem;
     }
-
-    .hidden {
-      display: none;
-    }
-
-    /* Tema claro */
-    body.light-theme {
-      background: radial-gradient(#f9f9ff, #e8e8ff);
-      color: #333;
-    }
-
-    body.light-theme .book-card {
-      background: #fff;
-      box-shadow: 0 0 10px #d8b4fe55;
-    }
-
-    body.light-theme .reader-content {
-      background: #f9f9ff;
-    }
-
-    body.light-theme #timeInput {
-      background: #eee;
-      color: #333;
-    }
-
-    body.light-theme .theme-btn,
-    body.light-theme .concluir-btn,
-    body.light-theme #auto-complete-btn {
-      background: linear-gradient(to right, #9333ea, #7e22ce);
-    }
-
-    body.light-theme .theme-btn:hover,
-    body.light-theme .concluir-btn:hover,
-    body.light-theme #auto-complete-btn:hover {
-      background: linear-gradient(to right, #7e22ce, #6b21a8);
-    }
-
-
-
   </style>
 </head>
 <body>
-  <a href="https://discord.gg/YOUR_DISCORD_LINK" target="_blank" class="discord-btn" aria-label="Entrar no Discord">
+  <a href="https://discord.gg/cQSyChU7wX" target="_blank" class="discord-btn" aria-label="Entrar no Discord">
     <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" alt="Discord" />
   </a>
 
@@ -218,16 +141,36 @@
 
   <h1>moonleia</h1>
 
-  <button id="toggle-theme" class="theme-btn">🌗 Alternar tema</button>
-
-  <div id="config-container">
-    <label for="timeInput">⏱️ Tempo por página (ms):</label>
-    <input type="number" id="timeInput" value="1000" min="100" step="100" />
-     <button id="autoButton" class="theme-btn">🚀 Autocompletar Tudo</button>
+  <!-- Login -->
+  <div id="login-container">
+    <input type="text" id="raInput" placeholder="Ex: 000123456789xsp">
+    <div style="position: relative;">
+      <input type="password" id="senhaInput" placeholder="Digite sua senha">
+      <span onclick="toggleSenha()" style="
+        position: absolute;
+        top: 35%;
+        right: 20px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #ccc;
+        font-size: 1.1rem;">👁️</span>
+    </div>
+    <button class="theme-btn" onclick="iniciarLeitura()">📖 Ler</button>
   </div>
 
-  <div id="books-container" class="book-grid"></div>
+  <!-- Configurações -->
+  <button id="toggle-theme" class="theme-btn hidden">🌗 Alternar tema</button>
 
+  <div id="config-container" class="hidden">
+    <label for="timeInput">⏱️ Tempo por página (ms):</label>
+    <input type="number" id="timeInput" value="1000" min="100" step="100" />
+    <button id="autoButton" class="theme-btn">🚀 Autocompletar Tudo</button>
+  </div>
+
+  <!-- Livros -->
+  <div id="books-container" class="book-grid hidden"></div>
+
+  <!-- Leitor -->
   <div id="reader" class="reader-container hidden">
     <div class="reader-header">
       <select id="pages"></select>
@@ -235,8 +178,50 @@
     <div id="conteudo" class="reader-content"></div>
   </div>
 
+  <!-- Notificações -->
   <div id="notifications-container"></div>
 
+  <script>
+    function showNotification(msg) {
+      const n = document.createElement("div");
+      n.className = "leiacheat-notification";
+      n.textContent = msg;
+      document.body.appendChild(n);
+      setTimeout(() => n.remove(), 5000);
+    }
+
+    async function iniciarLeitura() {
+      const ra = document.getElementById('raInput').value.trim();
+      const senha = document.getElementById('senhaInput').value.trim();
+
+      if (!ra || !senha) {
+        showNotification("❌ Preencha RA e senha corretamente.");
+        return;
+      }
+
+      window.userLogin = { ra, senha };
+
+      if (typeof startMoonLeia === 'function') {
+        const success = await startMoonLeia();
+
+        if (success) {
+          document.getElementById('login-container').classList.add('hidden');
+          document.getElementById('books-container').classList.remove('hidden');
+          document.getElementById('config-container').classList.remove('hidden');
+          document.getElementById('toggle-theme').classList.remove('hidden');
+        } else {
+          showNotification("❌ RA ou senha inválidos.");
+        }
+      } else {
+        showNotification("⚠️ Função startMoonLeia não carregada.");
+      }
+    }
+
+    function toggleSenha() {
+      const input = document.getElementById('senhaInput');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+  </script>
 
   <script src="script.js"></script>
 </body>
